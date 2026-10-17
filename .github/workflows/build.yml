@@ -1,0 +1,27 @@
+# Собирает Wayfire сразу для Windows, macOS и Linux на серверах GitHub (бесплатно).
+# Как запустить: загрузи проект на GitHub, открой вкладку Actions, выбери "Build Wayfire", нажми "Run workflow".
+# Готовые файлы появятся внизу страницы запуска, в разделе Artifacts.
+name: Build Wayfire
+on: workflow_dispatch
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install --save-dev electron electron-builder
+      - run: npx electron-builder --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wayfire-${{ matrix.os }}
+          path: |
+            dist/*.exe
+            dist/*.dmg
+            dist/*.AppImage

@@ -1,0 +1,53 @@
+{
+  "name": "wayfire",
+  "version": "1.0.0",
+  "description": "Wayfire: неофициальный лаунчер для Minecraft",
+  "author": "MeltedLace96781",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "signal": "node server/signal.js",
+    "dist": "electron-builder --win",
+    "dist:win": "electron-builder --win",
+    "dist:mac": "electron-builder --mac",
+    "dist:linux": "electron-builder --linux"
+  },
+  "build": {
+    "appId": "app.wayfire.launcher",
+    "productName": "Wayfire",
+    "files": [
+      "main.js",
+      "preload.js",
+      "auth.js",
+      "net.js",
+      "modrinth.js",
+      "mclauncher.js",
+      "game.js",
+      "versions.js",
+      "skin.js",
+      "launcher.html",
+      "config.json",
+      "package.json",
+      "build/icon.png"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "artifactName": "Wayfire-${version}-${os}.${ext}",
+    "mac": {
+      "target": "dmg",
+      "icon": "build/icon.png",
+      "category": "public.app-category.games"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "build/icon.png",
+      "category": "Game"
+    }
+  }
+}
