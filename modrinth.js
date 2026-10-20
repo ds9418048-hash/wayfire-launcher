@@ -35,7 +35,7 @@ function stripMd(t) {
  */
 function createModrinth(o) {
   const f = o.fetch || globalThis.fetch;
-  const ua = o.userAgent || 'Wayfire/1.0.0';
+  const ua = o.userAgent || 'Wayfire/1.0.1';
   const root = o.root;
 
   async function get(p, params) {

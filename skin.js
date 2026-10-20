@@ -61,7 +61,7 @@ function applySkin(gameDir, dataUrl) {
     if (fs.existsSync(zip)) { fs.rmSync(zip, { force: true }); setPackInOptions(gameDir, false); }
     return false;
   }
-  const files = [['pack.mcmeta', Buffer.from(JSON.stringify({ pack: { pack_format: 15, supported_formats: { min_inclusive: 1, max_inclusive: 999 }, description: 'Wayfire: твой скин' } }))]];
+  const files = [['pack.mcmeta', Buffer.from(JSON.stringify({ pack: { pack_format: 15, min_format: 1, max_format: 9999, supported_formats: { min_inclusive: 1, max_inclusive: 9999 }, description: 'Wayfire: твой скин' } }))]];
   files.push(['assets/minecraft/textures/entity/steve.png', png], ['assets/minecraft/textures/entity/alex.png', png]);
   for (const kind of ['wide', 'slim']) for (const n of NAMES) files.push(['assets/minecraft/textures/entity/player/' + kind + '/' + n + '.png', png]);
   fs.mkdirSync(path.dirname(zip), { recursive: true });

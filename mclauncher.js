@@ -19,7 +19,7 @@ function minecraftDir() {
 
 async function getJson(f, url, ua) {
   let r;
-  try { r = await f(url, { headers: { 'User-Agent': ua || 'Wayfire/1.0.0', Accept: 'application/json' } }); }
+  try { r = await f(url, { headers: { 'User-Agent': ua || 'Wayfire/1.0.1', Accept: 'application/json' } }); }
   catch (e) { throw new Error('Нет связи с интернетом.'); }
   if (!r.ok) throw new Error('Сервер вернул ошибку ' + r.status + '.');
   return r.json();

@@ -1,6 +1,6 @@
 {
   "name": "wayfire",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Wayfire: неофициальный лаунчер для Minecraft",
   "author": "MeltedLace96781",
   "main": "main.js",

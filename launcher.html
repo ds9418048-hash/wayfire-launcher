@@ -238,13 +238,43 @@ dialog{border-color:#6b3a1a}
   .main{padding:16px}
   h1{font-size:14px}
 }
+
+/* Хэллоуин (отключается в настройках) */
+body.hw{--btn-on:#7a2fbf;--btn-hover:#a5561f;--fire:#ff7a1a;--gold:#ffb347;background-color:#0b0612}
+body.hw::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(70% 55% at 50% 0%,rgba(150,70,255,.22),transparent 70%),radial-gradient(60% 40% at 50% 105%,rgba(255,120,20,.2),transparent 70%)}
+#hwl{position:fixed;inset:0;z-index:5;pointer-events:none;overflow:hidden;display:none}
+body.hw #hwl{display:block}
+#hwl i{position:absolute;font-style:normal;top:-60px;filter:drop-shadow(0 0 10px rgba(255,140,40,.6));animation:hwf linear infinite}
+@keyframes hwf{0%{transform:translate(0,-60px) rotate(0)}50%{transform:translate(var(--dx),55vh) rotate(18deg)}100%{transform:translate(0,112vh) rotate(-12deg)}}
+#hwl b{position:absolute;right:0;top:0;font-size:96px;line-height:1;opacity:.55;transform:scaleX(-1);font-weight:400;filter:drop-shadow(0 0 8px #000)}
+body.hw .brand b::after{content:" 🎃"}
+body.calm #hwl i{animation:none;display:none}
+@media(prefers-reduced-motion:reduce){#hwl i{animation:none;display:none}}
+
+/* Оформление 1.0.1: карточки, плавность, Хэллоуин */
+.fcard{background:linear-gradient(180deg,#141018,#0b0a0d);border-color:#3a2f2a;box-shadow:0 10px 30px -14px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.05);transition:transform .25s,border-color .25s,box-shadow .25s}
+.fcard:hover{transform:translateY(-3px);border-color:#6b4a2f}
+.panel>*{animation:wfUp .4s ease both}
+@keyframes wfUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.tab{transition:background .15s,transform .15s,box-shadow .15s,color .15s}.tab:hover{transform:translateY(-1px)}
+.main::-webkit-scrollbar,.side::-webkit-scrollbar{width:10px}.main::-webkit-scrollbar-thumb,.side::-webkit-scrollbar-thumb{background:#3b3b3b;border-radius:6px}.main::-webkit-scrollbar-track,.side::-webkit-scrollbar-track{background:transparent}
+body.hw .fcard{background:linear-gradient(180deg,#1a1024,#0c0712);border-color:#4b2a6b;box-shadow:0 10px 30px -14px #000,0 0 22px -8px rgba(150,70,255,.45),inset 0 1px 0 rgba(255,255,255,.06)}
+body.hw .fcard:hover{border-color:#ff8a2b;box-shadow:0 14px 34px -12px #000,0 0 28px -6px rgba(255,138,43,.65)}
+body.hw .side{box-shadow:inset 0 0 0 9999px rgba(70,20,110,.3),4px 0 30px -8px rgba(150,70,255,.4)}
+body.hw .tab:hover{box-shadow:0 0 16px -2px rgba(255,138,43,.6)}
+body.hw .main h1,body.hw .main h2{text-shadow:0 0 16px rgba(255,140,40,.55),0 0 34px rgba(150,70,255,.35)}
+body.hw::after{content:"";position:fixed;left:0;right:0;bottom:0;height:24vh;z-index:1;pointer-events:none;background:linear-gradient(0deg,rgba(150,90,220,.24),transparent);animation:wfFog 7s ease-in-out infinite alternate}
+@keyframes wfFog{to{opacity:.4}}
+body.calm.hw::after,body.calm .panel>*{animation:none}
+@media(prefers-reduced-motion:reduce){.panel>*,body.hw::after{animation:none}}
 </style>
 </head>
 <body>
+<div id="hwl" aria-hidden="true"><b>🕸️</b></div>
 <canvas id="embers" aria-hidden="true"></canvas>
 <div class="app">
   <aside class="side">
-    <div class="brand"><img class="logo fire-i" id="logo" alt="" width="44" height="44"><div><b>Wayfire</b><span>Версия 0.3</span></div></div>
+    <div class="brand"><img class="logo fire-i" id="logo" alt="" width="44" height="44"><div><b>Wayfire</b><span>Версия 1.0.1</span></div></div>
     <ul class="nav" id="nav" role="list"></ul>
     <div class="foot">
       <button class="tab acct" id="acct" type="button" title="Аккаунт"></button>
@@ -741,7 +771,7 @@ function renderCatalogReal(){
     LOADERS.forEach(l=>filt.appendChild(opt(l,null,K.lo===l,()=>{K.lo=K.lo===l?'':l;realFetch()})));
   }
   const main=$('div'),g=$('div','mgrid');
-  if(K.src==='c')main.appendChild($('p','hint','CurseForge требует бесплатный ключ разработчика, подключим его отдельно. Пока доступен Modrinth. Карты тоже появятся вместе с CurseForge.'));
+  if(K.src==='c')main.appendChild($('p','hint','CurseForge скоро появится в Wayfire. Пока моды, карты, текстурпаки и шейдеры берутся из Modrinth.'));
   else{
     if(K.err){main.appendChild($('p','err',K.err));main.appendChild(btn('tab sm','Повторить',()=>realFetch()))}
     else if(K.loading&&!K.rows.length)main.appendChild($('p','hint','Загрузка…'));
@@ -865,7 +895,7 @@ function renderFriends(){
   stopFire();clearTimeout(F.t);if(F.state==='search'){F.state='idle';F.peer=null}
   const root=$('div','fr'),scene=$('div','scene'),cv=$('canvas');
   cv.width=160;cv.height=72;cv.setAttribute('role','img');cv.setAttribute('aria-label','Двое игроков у ночного костра');F.cv=cv;
-  const tt=head('Игра с друзьями','Соберитесь у костра: введи ник друга и подключитесь к одной игре');
+  const tt=head('Игра с друзьями','Соберитесь у костра: обменяйтесь кодами и играйте в одном мире');
   const tagMe=$('div','tag'),tagPeer=$('div','tag'),pill=$('div','pill2');
   tagMe.style.left='32.5%';tagPeer.style.left='67.5%';pill.setAttribute('role','status');
   const bm=$('div','bub'),bp=$('div','bub');bm.style.left='32.5%';bp.style.left='67.5%';bm.hidden=bp.hidden=true;
@@ -944,14 +974,16 @@ function renderFriends(){
     pill.classList.toggle('on',F.state==='joined'||F.host);
     paintHost();redraw();
   }
-  const g=$('div','fgrid');g.append(join,host);
+  const g=$('div','fgrid');
   if(NETB){
     const cc=$('section','fcard');
-    cc.append($('h3',null,'Без сервера: по коду'),
-      $('p','hint','Ничего настраивать не нужно. Вы просто обмениваетесь двумя кодами в Discord или Telegram. Подходит, если нет сервера комнат.'),
+    cc.append($('h3',null,'Играть с другом по коду'),
+      $('p','hint','Без серверов и регистрации. Хозяин создаёт код и отправляет его другу в Discord или Telegram, друг присылает ответный код, и вы в одном мире.'),
+      $('p','hint','Нужно: Wayfire у обоих, одна версия игры и одинаковые моды.'),
       btn('tab ok big','Я хозяин: создать код',()=>codeHostUI()),btn('tab big','Я друг: вставить код',()=>codeJoinUI()));
     g.appendChild(cc);
-  }
+    if(CFG.signal)g.append(join,host);
+  }else g.append(join,host);
   root.append(tt,scene,pill,g,$('p','hint',NETB?'Игра идёт напрямую между вами, сервер комнат только помогает найти друг друга.':'Это демонстрация: настоящая сеть работает в приложении.'));
   panel.replaceChildren(root);
   F.ui={paintJoin,paintScene,err:t=>{err.textContent=t},host:()=>paintHost()};
@@ -1316,13 +1348,18 @@ function drawActors(x,t){
 }
 
 /* ---- настройки (хранятся в браузере) ---- */
-const DEF={ram:4,java:'Автоматически',javaPath:'',jvm:'-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:G1NewSizePercent=30 -XX:G1ReservePercent=20 -XX:G1HeapRegionSize=8M',dir:'~/.wayfire',w:'1280',h:'720',full:false,close:true,vm:100,vs:100,anim:true,nick:'Steve',ms:null,licEver:false,tour:false,signal:'',friends:[],skinUrl:null,gen:null,slim:false};
+const DEF={halloween:true,ram:4,java:'Автоматически',javaPath:'',jvm:'-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:G1NewSizePercent=30 -XX:G1ReservePercent=20 -XX:G1HeapRegionSize=8M',dir:'~/.wayfire',w:'1280',h:'720',full:false,close:true,vm:100,vs:100,anim:true,nick:'Steve',ms:null,licEver:false,tour:false,signal:'',friends:[],skinUrl:null,gen:null,slim:false};
 const CFG={...DEF};
 try{Object.assign(CFG,JSON.parse(localStorage.getItem('cfg')||'{}'))}catch(e){}
 if(CFG.jvm==='-XX:+UseG1GC')CFG.jvm=DEF.jvm;
 if(!CFG.v1){CFG.close=true;CFG.v1=1}
 const saveCfg=()=>{try{localStorage.setItem('cfg',JSON.stringify(CFG))}catch(e){}};
 VOL.m=CFG.vm/100;VOL.s=CFG.vs/100;F.me=(CFG.nick&&CFG.nick!=='MeltedLace96781'?CFG.nick:'Steve');CFG.nick=F.me;
+
+/* Хэллоуин */
+(()=>{const L=document.getElementById('hwl'),E=['🎃','🦇','👻','🦇','🎃','🕷️','🦇','👻'];
+for(let i=0;i<14;i++){const e=document.createElement('i');e.textContent=E[i%E.length];e.style.cssText='left:'+(3+i*7)+'%;font-size:'+(22+(i*7)%22)+'px;--dx:'+((i%2?1:-1)*(30+(i*13)%60))+'px;animation-duration:'+(14+(i*5)%12)+'s;animation-delay:-'+(i*2.3)+'s';L.appendChild(e)}})();
+const applyHw=()=>document.body.classList.toggle('hw',!!CFG.halloween);applyHw();
 const curGen=()=>({...avatar(F.me),...(CFG.gen||{})});
 if(CFG.skinUrl){const im=new Image();im.onload=()=>{SK.mine=mkSk(normSkin(im),CFG.slim);redraw()};im.src=CFG.skinUrl}
 else if(CFG.gen)SK.mine=mkSk(genSkin(curGen()),CFG.slim);
@@ -1458,8 +1495,9 @@ function renderSettings(){
   const app=$('section','fcard');
   app.append($('h3',null,'Лаунчер'),
     toggle('Закрывать лаунчер при запуске игры',CFG.close,v=>{CFG.close=v;saveCfg()}),
+    toggle('Хэллоуинский стиль',CFG.halloween,v=>{CFG.halloween=v;saveCfg();applyHw()}),
     toggle('Анимация костра и искр',CFG.anim,v=>{CFG.anim=v;saveCfg();document.body.classList.toggle('calm',!v);emStart()}),
-    $('p','hint','Wayfire · версия 0.3'),$('p','hint','Wayfire: неофициальный лаунчер. Не связан с Mojang и Microsoft. Minecraft: товарный знак Mojang Studios.'),txt('Сервер комнат для игры с друзьями','signal','https://адрес-твоего-сервера'),btn('tab sm','Пройти обучение заново',()=>startTour()),
+    $('p','hint','Wayfire · версия 1.0.1'),$('p','hint','Wayfire: неофициальный лаунчер. Не связан с Mojang и Microsoft. Minecraft: товарный знак Mojang Studios.'),txt('Сервер комнат для игры с друзьями','signal','https://адрес-твоего-сервера'),btn('tab sm','Пройти обучение заново',()=>startTour()),
     btn('tab sm red','Сбросить настройки',()=>modal('Сбросить настройки?',[$('p','hint','Настройки, скин и ник вернутся к значениям по умолчанию.')],
       [['Сбросить','red',()=>{Object.assign(CFG,DEF);try{localStorage.removeItem('cfg')}catch(e){}VOL.m=1;VOL.s=1;F.me='Steve';SK.mine=null;renderSettings();toast('Настройки сброшены')}],['Отмена','']])));
   const g=$('div','fgrid');g.append(game,snd2,app);
@@ -1603,7 +1641,7 @@ async function realLaunch(){
     fill.style.width=Math.round(sp[0]+(sp[1]-sp[0])*fr)+'%';
   };
   try{
-    await GAME.start({nick:F.me,skin:CFG.skinUrl||null,build:{id:b.id,name:b.name,version:b.version,type:b.type,loader:b.loader},
+    await GAME.start({nick:F.me,skin:CFG.skinUrl||(()=>{try{return genSkin(curGen()).toDataURL()}catch(e){return null}})(),build:{id:b.id,name:b.name,version:b.version,type:b.type,loader:b.loader},
       settings:{ram:CFG.ram,java:CFG.java,javaPath:CFG.javaPath,jvm:CFG.jvm,w:CFG.w,h:CFG.h,full:CFG.full}});
     info.textContent='Игра запущена. Приятной игры!';fill.style.width='100%';
     if(CFG.close&&window.wayfire&&window.wayfire.quit)setTimeout(()=>window.wayfire.quit(),1500);

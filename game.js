@@ -82,7 +82,7 @@ function findJava(required, component, custom, extra) {
 function createGame(o) {
   const root = o.root;
   const f = o.fetch || globalThis.fetch;
-  const ua = o.userAgent || 'Wayfire/1.0.0';
+  const ua = o.userAgent || 'Wayfire/1.0.1';
   const MANIFEST = o.manifestUrl || 'https://piston-meta.mojang.com/mc/game/version_manifest_v2.json';
   const RES = o.resourcesUrl || 'https://resources.download.minecraft.net/';
   const osName = o.osName || (process.platform === 'win32' ? 'windows' : process.platform === 'darwin' ? 'osx' : 'linux');
@@ -276,7 +276,7 @@ function createGame(o) {
     const vars = {
       auth_player_name: auth.name, version_name: v.id, game_directory: gameDir, assets_root: p('assets'),
       assets_index_name: v.assetIndex ? v.assetIndex.id : v.assets, auth_uuid: auth.uuid, auth_access_token: auth.token,
-      clientid: '', auth_xuid: '', user_type: auth.userType || 'msa', version_type: v.type || 'release', launcher_name: 'Wayfire', launcher_version: '1.0.0',
+      clientid: '', auth_xuid: '', user_type: auth.userType || 'msa', version_type: v.type || 'release', launcher_name: 'Wayfire', launcher_version: '1.0.1',
       natives_directory: ndir, classpath, classpath_separator: sep, library_directory: p('libraries'),
       resolution_width: String(w), resolution_height: String(h), user_properties: '{}',
       auth_session: 'token:' + auth.token + ':' + auth.uuid, game_assets: p('assets', 'virtual', 'legacy')

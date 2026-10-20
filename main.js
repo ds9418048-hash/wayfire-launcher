@@ -16,7 +16,7 @@ try { config = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), '
 // Application (client) ID из Azure (см. README, шаг 3)
 const CLIENT_ID = process.env.WAYFIRE_CLIENT_ID || config.clientId || 'ВСТАВЬ_СВОЙ_CLIENT_ID';
 // Modrinth просит уникальный User-Agent с контактом
-const USER_AGENT = process.env.WAYFIRE_UA || config.userAgent || 'wayfire-launcher/1.0.0';
+const USER_AGENT = process.env.WAYFIRE_UA || config.userAgent || 'wayfire-launcher/1.0.1';
 
 // Токен обновления хранится зашифрованным средствами системы, а не в открытом виде.
 const sessionFile = () => path.join(app.getPath('userData'), 'session.bin');
