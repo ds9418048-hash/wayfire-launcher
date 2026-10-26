@@ -16,7 +16,7 @@ try { config = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), '
 // Application (client) ID из Azure (см. README, шаг 3)
 const CLIENT_ID = process.env.WAYFIRE_CLIENT_ID || config.clientId || 'ВСТАВЬ_СВОЙ_CLIENT_ID';
 // Modrinth просит уникальный User-Agent с контактом
-const USER_AGENT = process.env.WAYFIRE_UA || config.userAgent || 'wayfire-launcher/1.0.1';
+const USER_AGENT = process.env.WAYFIRE_UA || config.userAgent || 'wayfire-launcher/2.0.0';
 
 // Токен обновления хранится зашифрованным средствами системы, а не в открытом виде.
 const sessionFile = () => path.join(app.getPath('userData'), 'session.bin');
@@ -103,7 +103,7 @@ app.whenReady().then(() => {
 
   // Игра с друзьями (нужна лицензия) и каталог модов (открытый, лицензия не нужна)
   registerNet({ ipcMain, send, requireLicense });
-  registerMods({ ipcMain, send, shell, userAgent: USER_AGENT, root: path.join(app.getPath('userData'), 'builds') });
+  registerMods({ ipcMain, send, shell, userAgent: USER_AGENT, curseforgeProxy: config.curseforgeProxy || '', root: path.join(app.getPath('userData'), 'builds') });
 
   // Прямой запуск игры (режим microsoft): файлы с серверов Mojang, проверка сумм, запуск с токеном аккаунта
   const game = createGame({ root: path.join(app.getPath('userData'), 'game'), userAgent: USER_AGENT });

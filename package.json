@@ -1,6 +1,6 @@
 {
   "name": "wayfire",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Wayfire: неофициальный лаунчер для Minecraft",
   "author": "MeltedLace96781",
   "main": "main.js",
@@ -28,7 +28,8 @@
       "launcher.html",
       "config.json",
       "package.json",
-      "build/icon.png"
+      "build/icon.png",
+      "curseforge.js"
     ],
     "win": {
       "target": "nsis",

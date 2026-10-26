@@ -35,7 +35,7 @@ function stripMd(t) {
  */
 function createModrinth(o) {
   const f = o.fetch || globalThis.fetch;
-  const ua = o.userAgent || 'Wayfire/1.0.1';
+  const ua = o.userAgent || 'Wayfire/2.0.0';
   const root = o.root;
 
   async function get(p, params) {
@@ -147,6 +147,9 @@ function createModrinth(o) {
       catch (e) { throw new Error('Нет связи при скачивании «' + name + '».'); }
       if (!r.ok) throw new Error('Не удалось скачать «' + name + '» (' + r.status + ').');
       const buf = Buffer.from(await r.arrayBuffer());
+      if (x.sha1 && crypto.createHash('sha1').update(buf).digest('hex') !== x.sha1) {
+        throw new Error('Файл «' + name + '» повреждён: контрольная сумма не совпала.');
+      }
       if (x.sha512 && crypto.createHash('sha512').update(buf).digest('hex') !== x.sha512) {
         throw new Error('Файл «' + name + '» повреждён: контрольная сумма не совпала.');
       }
@@ -180,12 +183,15 @@ function createModrinth(o) {
 }
 
 /** Подключает каталог к IPC. */
-function registerMods({ ipcMain, send, root, shell, userAgent }) {
+function registerMods({ ipcMain, send, root, shell, userAgent, curseforgeProxy }) {
   const m = createModrinth({ root, userAgent });
-  ipcMain.handle('mods:search', (_e, p) => m.search(p || {}));
-  ipcMain.handle('mods:project', (_e, id) => m.project(id));
+  const { createCurseForge } = require('./curseforge');
+  const cf = createCurseForge({ proxy: curseforgeProxy, userAgent });
+  const isCf = id => String(id).startsWith('cf:');
+  ipcMain.handle('mods:search', (_e, p) => ((p && p.src) === 'c' ? cf.search(p) : m.search(p || {})));
+  ipcMain.handle('mods:project', (_e, id) => (isCf(id) ? cf.project(id) : m.project(id)));
   ipcMain.handle('mods:versions', () => m.gameVersions());
-  ipcMain.handle('mods:plan', (_e, p) => m.plan(p));
+  ipcMain.handle('mods:plan', (_e, p) => (isCf(p && p.id) ? cf.plan(p) : m.plan(p)));
   ipcMain.handle('mods:install', (_e, p) => m.install(p, prog => send('mods:progress', prog)));
   ipcMain.handle('mods:toggle', (_e, id, name, on) => m.toggle(id, name, on));
   ipcMain.handle('mods:remove', (_e, id, kind, name) => m.remove(id, kind, name));

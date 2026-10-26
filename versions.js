@@ -3,7 +3,7 @@
 const MANIFEST = 'https://piston-meta.mojang.com/mc/game/version_manifest_v2.json';
 
 async function getJson(f, url) {
-  const r = await f(url, { headers: { 'User-Agent': 'Wayfire/1.0.1', Accept: 'application/json' } });
+  const r = await f(url, { headers: { 'User-Agent': 'Wayfire/2.0.0', Accept: 'application/json' } });
   if (!r.ok) throw new Error('HTTP ' + r.status);
   return r.json();
 }

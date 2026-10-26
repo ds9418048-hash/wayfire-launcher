@@ -274,7 +274,7 @@ body.calm.hw::after,body.calm .panel>*{animation:none}
 <canvas id="embers" aria-hidden="true"></canvas>
 <div class="app">
   <aside class="side">
-    <div class="brand"><img class="logo fire-i" id="logo" alt="" width="44" height="44"><div><b>Wayfire</b><span>Версия 1.0.1</span></div></div>
+    <div class="brand"><img class="logo fire-i" id="logo" alt="" width="44" height="44"><div><b>Wayfire</b><span>Версия 2.0.0</span></div></div>
     <ul class="nav" id="nav" role="list"></ul>
     <div class="foot">
       <button class="tab acct" id="acct" type="button" title="Аккаунт"></button>
@@ -736,12 +736,12 @@ const SORTS=['Рекомендуемые','По скачиваниям','Нов�
 Object.assign(K,{rows:null,total:0,loading:false,err:'',note:'',vers:null,key:'',qt:0});
 const catShown=()=>!K.det&&(curTab==='mods'||(curTab==='builds'&&K.ctx>=0));
 async function realFetch(append){
-  const key=JSON.stringify([K.c,K.q.trim(),K.ver,K.lo,K.sort]);
+  const key=JSON.stringify([K.src,K.c,K.q.trim(),K.ver,K.lo,K.sort]);
   K.key=key;K.loading=true;K.err='';
   if(!append){K.rows=[];K.total=0;K.note=''}
   if(catShown())renderCatalogReal();
   try{
-    const r=await MODS.search({cat:K.c,q:K.q.trim(),ver:K.ver,loader:K.lo,sort:K.sort,offset:append?K.rows.length:0});
+    const r=await MODS.search({src:K.src,cat:K.c,q:K.q.trim(),ver:K.ver,loader:K.lo,sort:K.sort,offset:append?K.rows.length:0});
     if(K.key!==key)return;
     K.rows=append?K.rows.concat(r.items):r.items;K.total=r.total;K.note=r.note||'';
   }catch(e){if(K.key!==key)return;K.err=em(e)}
@@ -751,9 +751,9 @@ async function realFetch(append){
 function renderCatalogReal(){
   if(K.det)return renderDetail();
   const ae=document.activeElement,hadQ=!!(ae&&ae.id==='q'),pos=hadQ?ae.selectionStart:0;
-  if(K.rows===null&&!K.loading&&K.src==='m'){realFetch();return}
+  if(K.rows===null&&!K.loading){realFetch();return}
   if(!K.vers){K.vers=[];MODS.gameVersions().then(v=>{K.vers=v;if(catShown())renderCatalogReal()}).catch(()=>{})}
-  const bar=head(K.ctx>=0?'Каталог для «'+BUILDS[K.ctx].name+'»':'Моды','Настоящий каталог Modrinth: моды, текстурпаки и шейдеры',
+  const bar=head(K.ctx>=0?'Каталог для «'+BUILDS[K.ctx].name+'»':'Моды','Каталог Modrinth и CurseForge: моды, текстурпаки и шейдеры',
     K.ctx>=0?[btn('tab sm','Назад',()=>{K.ctx=-1;renderBuilds()})]:[]);
   const pills=$('div','pills');
   CATS.forEach(([id,t])=>{
@@ -771,8 +771,7 @@ function renderCatalogReal(){
     LOADERS.forEach(l=>filt.appendChild(opt(l,null,K.lo===l,()=>{K.lo=K.lo===l?'':l;realFetch()})));
   }
   const main=$('div'),g=$('div','mgrid');
-  if(K.src==='c')main.appendChild($('p','hint','CurseForge скоро появится в Wayfire. Пока моды, карты, текстурпаки и шейдеры берутся из Modrinth.'));
-  else{
+  {
     if(K.err){main.appendChild($('p','err',K.err));main.appendChild(btn('tab sm','Повторить',()=>realFetch()))}
     else if(K.loading&&!K.rows.length)main.appendChild($('p','hint','Загрузка…'));
     else if(K.note)main.appendChild($('p','hint',K.note));
@@ -793,7 +792,7 @@ function renderCatalogReal(){
   const sh=$('div','sheet'+(K.sw?'':' anim'));K.sw=true;
   sh.appendChild($('div','nm','Откуда скачивать'));
   Object.entries(SRC).forEach(([k,v])=>{
-    const b=btn('tab sm pill',v,()=>{K.src=k;K.ver='';K.lo='';if(k==='m')realFetch();else renderCatalogReal()});
+    const b=btn('tab sm pill',v,()=>{K.src=k;K.ver='';K.lo='';realFetch()});
     b.setAttribute('aria-pressed',String(K.src===k));sh.appendChild(b);
   });
   panel.replaceChildren(bar,pills,inp,lay,sh);
@@ -1497,7 +1496,7 @@ function renderSettings(){
     toggle('Закрывать лаунчер при запуске игры',CFG.close,v=>{CFG.close=v;saveCfg()}),
     toggle('Хэллоуинский стиль',CFG.halloween,v=>{CFG.halloween=v;saveCfg();applyHw()}),
     toggle('Анимация костра и искр',CFG.anim,v=>{CFG.anim=v;saveCfg();document.body.classList.toggle('calm',!v);emStart()}),
-    $('p','hint','Wayfire · версия 1.0.1'),$('p','hint','Wayfire: неофициальный лаунчер. Не связан с Mojang и Microsoft. Minecraft: товарный знак Mojang Studios.'),txt('Сервер комнат для игры с друзьями','signal','https://адрес-твоего-сервера'),btn('tab sm','Пройти обучение заново',()=>startTour()),
+    $('p','hint','Wayfire · версия 2.0.0'),$('p','hint','Wayfire: неофициальный лаунчер. Не связан с Mojang и Microsoft. Minecraft: товарный знак Mojang Studios.'),txt('Сервер комнат для игры с друзьями','signal','https://адрес-твоего-сервера'),btn('tab sm','Пройти обучение заново',()=>startTour()),
     btn('tab sm red','Сбросить настройки',()=>modal('Сбросить настройки?',[$('p','hint','Настройки, скин и ник вернутся к значениям по умолчанию.')],
       [['Сбросить','red',()=>{Object.assign(CFG,DEF);try{localStorage.removeItem('cfg')}catch(e){}VOL.m=1;VOL.s=1;F.me='Steve';SK.mine=null;renderSettings();toast('Настройки сброшены')}],['Отмена','']])));
   const g=$('div','fgrid');g.append(game,snd2,app);

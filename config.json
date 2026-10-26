@@ -1,5 +1,6 @@
 {
   "authMode": "offline",
   "clientId": "ВСТАВЬ_СВОЙ_CLIENT_ID",
-  "userAgent": "Wayfire/1.0.1 (https://wayfire.ds9418048.workers.dev/)"
+  "userAgent": "Wayfire/2.0.0 (https://wayfire.ds9418048.workers.dev/)",
+  "curseforgeProxy": "https://wayfire-cf.ds9418048.workers.dev"
 }
